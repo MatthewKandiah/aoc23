@@ -59,7 +59,7 @@ func getDigits(input string, includeStrings bool) []int {
 	var result []int
 	for idx, char := range input {
 		if unicode.IsDigit(char) {
-			result = append(result, int(char - '0'))
+			result = append(result, int(char-'0'))
 		} else if includeStrings {
 			digit, found := getDigitFromString(input[idx:])
 			if found {
@@ -74,27 +74,28 @@ func getDigitFromString(input string) (int, bool) {
 	var buffer string
 	for _, char := range input {
 		buffer += string(char)
-		if buffer == "one" {
+		switch buffer {
+		case "one":
 			return 1, true
-		} else if buffer == "two" {
+		case "two":
 			return 2, true
-		} else if buffer == "three" {
+		case "three":
 			return 3, true
-		} else if buffer == "four" {
+		case "four":
 			return 4, true
-		} else if buffer == "five" {
+		case "five":
 			return 5, true
-		} else if buffer == "six" {
+		case "six":
 			return 6, true
-		} else if buffer == "seven" {
+		case "seven":
 			return 7, true
-		} else if buffer == "eight" {
+		case "eight":
 			return 8, true
-		} else if buffer == "nine" {
+		case "nine":
 			return 9, true
-		} else if buffer == "zero" {
+		case "zero":
 			return 0, true
-		} 
+		}
 	}
 	return -1, false
 }
