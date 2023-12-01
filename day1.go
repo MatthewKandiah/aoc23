@@ -1,15 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"unicode"
+	util "aoc23/util"
 )
 
 func main() {
 	dataPath := "data/day1"
-	data := readData(dataPath)
+	data := util.ReadData(dataPath)
 
 	var digitsList [][]int
 	for _, str := range data {
@@ -31,28 +30,11 @@ func main() {
 		calibrationValues2 = append(calibrationValues2, getCalibrationValue(digits))
 	}
 
-	firstAnswer := sum(calibrationValues)
-	secondAnswer := sum(calibrationValues2)
+	firstAnswer := util.Sum(calibrationValues)
+	secondAnswer := util.Sum(calibrationValues2)
 
 	fmt.Println("1.", firstAnswer)
 	fmt.Println("2.", secondAnswer)
-}
-
-func readData(path string) []string {
-	readFile, err := os.Open(path)
-	if err != nil {
-		fmt.Println("failed to open {}", path)
-		os.Exit(1)
-	}
-	defer readFile.Close()
-
-	var result []string
-	fileScanner := bufio.NewScanner(readFile)
-	fileScanner.Split(bufio.ScanLines)
-	for fileScanner.Scan() {
-		result = append(result, fileScanner.Text())
-	}
-	return result
 }
 
 func getDigits(input string, includeStrings bool) []int {
@@ -110,10 +92,3 @@ func getCalibrationValue(input []int) int {
 	return firstDigit*10 + secondDigit
 }
 
-func sum(input []int) int {
-	result := 0
-	for _, value := range input {
-		result += value
-	}
-	return result
-}
