@@ -40,6 +40,7 @@ func main() {
 
 func readData(path string) []string {
 	readFile, err := os.Open(path)
+	defer readFile.Close()
 	if err != nil {
 		fmt.Println("failed to open {}", path)
 		os.Exit(1)
@@ -51,7 +52,6 @@ func readData(path string) []string {
 	for fileScanner.Scan() {
 		result = append(result, fileScanner.Text())
 	}
-	readFile.Close()
 	return result
 }
 
