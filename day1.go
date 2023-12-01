@@ -40,11 +40,11 @@ func main() {
 
 func readData(path string) []string {
 	readFile, err := os.Open(path)
-	defer readFile.Close()
 	if err != nil {
 		fmt.Println("failed to open {}", path)
 		os.Exit(1)
 	}
+	defer readFile.Close()
 
 	var result []string
 	fileScanner := bufio.NewScanner(readFile)
