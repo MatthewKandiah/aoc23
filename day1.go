@@ -1,9 +1,9 @@
 package main
 
 import (
+	util "aoc23/util"
 	"fmt"
 	"unicode"
-	util "aoc23/util"
 )
 
 func main() {
@@ -91,4 +91,3 @@ func getCalibrationValue(input []int) int {
 	secondDigit := input[len(input)-1]
 	return firstDigit*10 + secondDigit
 }
-
