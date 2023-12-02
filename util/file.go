@@ -1,16 +1,14 @@
 package fileutil
 
 import (
-	"os"
-	"fmt"
 	"bufio"
+	"os"
 )
 
-func ReadData(path string) []string {
+func ReadData(path string) ([]string, error) {
 	readFile, err := os.Open(path)
 	if err != nil {
-		fmt.Println("failed to open {}", path)
-		os.Exit(1)
+		return nil, err
 	}
 	defer readFile.Close()
 
@@ -20,7 +18,7 @@ func ReadData(path string) []string {
 	for fileScanner.Scan() {
 		result = append(result, fileScanner.Text())
 	}
-	return result
+	return result, nil
 }
 
 func Sum(input []int) int {

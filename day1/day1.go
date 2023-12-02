@@ -3,12 +3,17 @@ package main
 import (
 	util "aoc23/util"
 	"fmt"
+	"os"
 	"unicode"
 )
 
 func main() {
-	dataPath := "data/day1"
-	data := util.ReadData(dataPath)
+	dataPath := "data"
+	data, err := util.ReadData(dataPath)
+	if err != nil {
+		fmt.Println("Failed to open", data)
+		os.Exit(1)
+	}
 
 	var digitsList [][]int
 	for _, str := range data {
