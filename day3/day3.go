@@ -1,120 +1,88 @@
 package main
 
 import (
-	utils "aoc23/util"
+	"aoc23/util"
 	"fmt"
 	"os"
 )
 
-type Number struct {
+type number struct {
 	value  int
-	xStart int
-	xEnd   int
+	startX int
+	endX   int
 	y      int
 }
 
-type Symbol struct {
+type symbol struct {
 	value rune
 	x     int
 	y     int
 }
 
-type PartNumber struct {
-	value int
-	numStartX int
-	numEndX int
-	numY int
-	symX int
-	symY int
-}
-
 func main() {
-	lines, err := utils.ReadData("day3.txt")
+	lines, err := util.ReadData("day3")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	charMatrix := linesToCharMatrix(lines)
-
-	numbers, symbols := parseCharMatrix(charMatrix)
-
-	var partNumbers []PartNumber
-	for _, number := range numbers {
-		for _, symbol := range symbols {
-			isInNeighbouringColumn := (symbol.x >= number.xStart-1) && (symbol.x <= number.xEnd+1)
-			isInNeighbouringRow := (symbol.y >= number.y-1) && (symbol.y <= number.y+1)
-			if isInNeighbouringColumn && isInNeighbouringRow {
-				partNumbers = append(partNumbers, PartNumber{value: number.value, numStartX: number.xStart, numEndX: number.xEnd, numY: number.y, symX: symbol.x, symY: symbol.y})
-				break
-			}
-		}
-	}
-
-	// debugging
-	// for _, n := range partNumbers {
-	// 	fmt.Println(n)
-	// }
+	numbers, symbols := parseLines(lines)
 
 	var partNumberValues []int
-	for _, partNumber := range partNumbers {
-		partNumberValues = append(partNumberValues, partNumber.value)
-	}
-	solution1 := utils.Sum(partNumberValues)
-
-	fmt.Println("Solution 1", solution1)
-}
-
-func parseCharMatrix(data [][]rune) ([]Number, []Symbol) {
-	var numbers []Number
-	var symbols []Symbol
-	var currentNumber *Number
-	for y, chars := range data {
-		for x, char := range chars {
-			switch char {
-			case '.':
-				if currentNumber != nil {
-					currentNumber.xEnd = x - 1
-					numbers = append(numbers, *currentNumber)
-					currentNumber = nil
-				}
-			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-				if currentNumber != nil {
-					currentNumber.value = currentNumber.value*10 + int(char - '0')
-				} else {
-					currentNumber = new(Number)
-					*currentNumber = Number{value: int(char - '0'), xStart: x, y: y}
-				}
-			default:
-				if currentNumber != nil {
-					currentNumber.xEnd = x - 1
-					numbers = append(numbers, *currentNumber)
-					currentNumber = nil
-				}
-				symbols = append(symbols, Symbol{value: char, x: x, y: y})
+	for _, number := range numbers {
+		for _, symbol := range symbols {
+			if (symbol.x >= number.startX-1) && (symbol.x <= number.endX+1) && (symbol.y >= number.y-1) && (symbol.y <= number.y+1) {
+				partNumberValues = append(partNumberValues, number.value)
 			}
 		}
 	}
-	if currentNumber != nil {
-		currentNumber.xEnd = len(data[0]) - 1
-		numbers = append(numbers, *currentNumber)
-		currentNumber = nil
+
+	fmt.Println("First solution:", util.Sum(partNumberValues))
+}
+
+func parseLines(lines []string) ([]number, []symbol) {
+	var numbers []number
+	var symbols []symbol
+	for y, line := range lines {
+		lineNumbers, lineSymbols := parseLine(line, y)
+		numbers = append(numbers, lineNumbers...)
+		symbols = append(symbols, lineSymbols...)
 	}
 	return numbers, symbols
 }
 
-func linesToCharMatrix(lines []string) [][]rune {
-	var result [][]rune
-	for _, line := range lines {
-		result = append(result, lineToCharRow(line))
+func parseLine(line string, y int) ([]number, []symbol) {
+	var numbers []number
+	var symbols []symbol
+	var currentNumber *number
+	for x, char := range line {
+		switch char {
+		case '.':
+			if currentNumber != nil {
+				numbers = append(numbers, *currentNumber)
+				currentNumber = nil
+			}
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			if currentNumber != nil {
+				currentNumber.endX += 1
+				currentNumber.value = currentNumber.value*10 + int(char-'0')
+			} else {
+				currentNumber = new(number)
+				currentNumber.startX = x
+				currentNumber.endX = x
+				currentNumber.y = y
+				currentNumber.value = int(char - '0')
+			}
+		default:
+			if currentNumber != nil {
+				numbers = append(numbers, *currentNumber)
+				currentNumber = nil
+			}
+			symbols = append(symbols, symbol{value: char, x: x, y: y})
+		}
 	}
-	return result
-}
-
-func lineToCharRow(str string) []rune {
-	var result []rune
-	for _, ch := range str {
-		result = append(result, ch)
+	if currentNumber != nil {
+		numbers = append(numbers, *currentNumber)
 	}
-	return result
+	return numbers, symbols
 }
