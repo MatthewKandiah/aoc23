@@ -19,6 +19,15 @@ type symbol struct {
 	y     int
 }
 
+type gear struct {
+	left  int
+	right int
+}
+
+func (g gear) product() int {
+	return g.left * g.right
+}
+
 func main() {
 	lines, err := util.ReadData("day3")
 	if err != nil {
@@ -37,7 +46,38 @@ func main() {
 		}
 	}
 
+	var gears []gear
+	for _, symbol := range symbols {
+		if symbol.value != '*' {
+			continue
+		}
+		// since '-' is a symbol, we can't get negative numbers, so this is a safe sentinel value
+		left, right := -1, -1
+		for _, number := range numbers {
+			if number.y == symbol.y && number.endX == symbol.x-1 {
+				left = number.value
+			}
+			if number.y == symbol.y && number.startX == symbol.x+1 {
+				right = number.value
+			}
+			if left != -1 && right != -1 {
+				gears = append(gears, gear{left: left, right: right})
+				break
+			}
+		}
+	}
+
+	for idx, gear := range gears {
+		fmt.Println(idx, gear)
+	}
+
+	var gearProducts []int
+	for _, gear := range gears {
+		gearProducts = append(gearProducts, gear.product())
+	}
+
 	fmt.Println("First solution:", util.Sum(partNumberValues))
+	fmt.Println("Second solution:", util.Sum(gearProducts))
 }
 
 func parseLines(lines []string) ([]number, []symbol) {
