@@ -57,6 +57,7 @@ func main() {
 			continue
 		}
 		// since '-' is a symbol, we can't get negative numbers, so this is a safe sentinel value
+		// found the problem, I've assumed they need to be in a line, the example makes it clear this is wrong, it's a gear if it's adjacent to exactly two *s in any direction!
 		left, right := -1, -1
 		for _, number := range partNumbers {
 			if number.y == symbol.y && number.endX == symbol.x-1 {
