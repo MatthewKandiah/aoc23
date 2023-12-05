@@ -37,13 +37,18 @@ func main() {
 
 	numbers, symbols := parseLines(lines)
 
-	var partNumberValues []int
+	var partNumbers []number
 	for _, number := range numbers {
 		for _, symbol := range symbols {
 			if (symbol.x >= number.startX-1) && (symbol.x <= number.endX+1) && (symbol.y >= number.y-1) && (symbol.y <= number.y+1) {
-				partNumberValues = append(partNumberValues, number.value)
+				partNumbers = append(partNumbers, number)
 			}
 		}
+	}
+
+	var partNumberValues []int
+	for _, part := range partNumbers {
+		partNumberValues = append(partNumberValues, part.value)
 	}
 
 	var gears []gear
@@ -53,7 +58,7 @@ func main() {
 		}
 		// since '-' is a symbol, we can't get negative numbers, so this is a safe sentinel value
 		left, right := -1, -1
-		for _, number := range numbers {
+		for _, number := range partNumbers {
 			if number.y == symbol.y && number.endX == symbol.x-1 {
 				left = number.value
 			}
