@@ -57,24 +57,18 @@ func main() {
 			continue
 		}
 		// since '-' is a symbol, we can't get negative numbers, so this is a safe sentinel value
-		// found the problem, I've assumed they need to be in a line, the example makes it clear this is wrong, it's a gear if it's adjacent to exactly two *s in any direction!
-		left, right := -1, -1
+		firstValue, secondValue := -1, -1
 		for _, number := range partNumbers {
-			if number.y == symbol.y && number.endX == symbol.x-1 {
-				left = number.value
-			}
-			if number.y == symbol.y && number.startX == symbol.x+1 {
-				right = number.value
-			}
-			if left != -1 && right != -1 {
-				gears = append(gears, gear{left: left, right: right})
-				break
+			if (symbol.x >= number.startX-1) && (symbol.x <= number.endX+1) && (symbol.y >= number.y-1) && (symbol.y <= number.y+1) {
+				if firstValue == -1 {
+					firstValue = number.value
+				} else {
+					secondValue = number.value
+					gears = append(gears, gear{left: firstValue, right: secondValue})
+					break
+				}
 			}
 		}
-	}
-
-	for idx, gear := range gears {
-		fmt.Println(idx, gear)
 	}
 
 	var gearProducts []int
