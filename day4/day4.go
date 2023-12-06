@@ -11,7 +11,11 @@ import (
 )
 
 func main() {
-	lines, err := util.ReadData("day4")
+	// getting the correct answer for the example, so basic idea is right
+	// path := "example"
+	path := "day4"
+
+	lines, err := util.ReadData(path)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -31,7 +35,24 @@ func main() {
 		scores = append(scores, score)
 	}
 
+	// strat with 1 of each card
+	var cardCounts []int
+	for range matchCounts {
+		cardCounts = append(cardCounts, 1)
+	}
+
+	// for every winning number, a card wins a single copy of a following card
+	for idx, matchCount := range matchCounts {
+		fmt.Println("Card", idx, "got", matchCount, "matches")
+		for i := idx +1; (i < idx + matchCount+1) && (i < len(cardCounts)); i++ {
+			// remember every copy also wins copies
+			cardCounts[i]+=cardCounts[idx]
+			fmt.Println("    Card", i, "increased to", cardCounts[i])
+		}
+	}
+
 	fmt.Println("Solution 1:", util.Sum(scores))
+	fmt.Println("Solution 2:", util.Sum(cardCounts))
 }
 
 func countMatches(a []int, b []int) int {
