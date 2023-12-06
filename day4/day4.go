@@ -19,10 +19,15 @@ func main() {
 
 	winnersList, candidatesList, err := parseLines(lines)
 
-	var scores []int
+	var matchCounts []int
 	for idx := range winnersList {
 		numMatches := countMatches(winnersList[idx], candidatesList[idx])
-		score := int(math.Pow(2, float64(numMatches-1)))
+		matchCounts = append(matchCounts, numMatches)
+	}
+
+	var scores []int
+	for _, count := range matchCounts {
+		score := int(math.Pow(2, float64(count-1)))
 		scores = append(scores, score)
 	}
 
